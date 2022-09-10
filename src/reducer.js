@@ -1,12 +1,15 @@
 const reducer = (state,action)=>{
+
     if(action.type==='CLEAR_CART'){
         return {...state,cart:[]}
     }
+
     if(action.type==='REMOVE'){
         return {...state,cart:state.cart.filter((cartItem)=>
                 cartItem.id !== action.payload
         )}
     }
+
     if(action.type==='INCREASE'){
         let tempCart=state.cart.map((cartItem)=>{
             if(cartItem.id === action.payload){
@@ -16,6 +19,7 @@ const reducer = (state,action)=>{
         });
         return {...state,cart:tempCart}
     }
+
     if(action.type==='DECREASE'){
         let tempCart=state.cart.map((cartItem)=>{
             if(cartItem.id === action.payload){
@@ -25,15 +29,32 @@ const reducer = (state,action)=>{
         }).filter((cartItem)=>cartItem.amount!== 0)
         return {...state,cart:tempCart}
     }
+
     if(action.type==='GET_TOTAL'){
-        const {total,amount}=state.card.reduce((cartTotal,cartItem)=>{
-            
+        let {total,amount}=state.cart.reduce((cartTotal,cartItem)=>{
+
+             const {price,amount}=cartItem
+
+             const itemTotal = price*amount;
+
+             cartTotal.total += itemTotal
+            cartTotal.amount += cartItem.amount //reminder :we can only write amount also as we destructure it
+            return cartTotal
         },{
                 total:0,
                 amount:0,
         })
+        total = parseFloat(total.toFixed())
         return {...state,total,amount}
     }
+
+
+    if(action.type==='LOADING'){
+    return {...state,loading:true}
+    }
+    if(action.type==='DISPLAY_ITEM'){
+        return {...state,cart:action.payload,loading:false}
+        }
     return state
 }
 export default reducer
